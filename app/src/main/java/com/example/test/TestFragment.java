@@ -89,6 +89,9 @@ public class TestFragment extends Fragment {
 
         // Test in master branch
         // add in feature_test branch
+
+        // in master 1
+        // in feature_test 1
     }
 
     private void showDialogChooseFolder() {
