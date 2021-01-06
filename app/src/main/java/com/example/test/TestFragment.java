@@ -88,6 +88,8 @@ public class TestFragment extends Fragment {
         showDialogChooseFolder();
 
         // Test in master branch
+
+        // in master 1
     }
 
     private void showDialogChooseFolder() {
