@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        #fpt_ai_livechat {
+            width: 368px !important;
+            height: 501px !important;
+            position: fixed !important;
+            /* z-index: 1500 !important; */
+            /* bottom: 99px !important; */
+            /* right: 26px !important; */
+            /* box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12) !important; */
+            box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff !important;
+            border-radius: 10px !important;
+            overflow-x: hidden !important;
+            overflow-y: hidden !important;
+            border: 1px solid #DFDFDF !important;
+            box-sizing: border-box !important;
+            display: contents !important;
+        }
+
+        #fpt_ai_livechat_button {
+            display: none;
+        }
+
+        #persistent-menu {
+            display: none !important;
+        }
+
+        .persistent-menu{
+            display: none !important;
+        }
+
+
+    </style>
+</head>
+
+<body style="display: block;">
+    <div id="fpt_ai_livechat" style="display: block;">
+        <div id="fpt_ai_livechat_container_header">
+            MCV-apps<button class="fpt_ai_livechat_container_header_close_button">
+                <img src="https://livechat.fpt.ai/v35/src/img/close.png">
+            </button>
+        </div>
+        <div id="fpt_ai_livechat_container_iframe">
+            <iframe id="fpt_ai_i_live_chat" name="1608719171251"
+                style="border: none; background-color: transparent; position: absolute; bottom: 0; right: 0; width: 100%; height: 100%;"
+                src="https://livechat.fpt.ai/v35/src/index.html"
+                onload="injectJS()">
+                <!--OTHER STUFF-->
+            </iframe>
+        </div>
+        <button id="fpt_ai_livechat_toggle_fullscreen" class="fpt_ai_livechat_container_header_fullscreen_button">
+            <img src="https://livechat.fpt.ai/v35/src/img/fullscreen.png">
+        </button>
+
+    </div>
+</body>
+<script>
+    let __protocol = document.location.protocol;
+    let __baseUrl = __protocol + '//livechat.fpt.ai/v35/src';
+    let prefixNameLiveChat = 'MCV-apps';
+    let objPreDefineLiveChat = {
+        appCode: '7d2e4f071e52db6f6b224f4ec37653bd',
+        themes: '',
+        appName: prefixNameLiveChat ? prefixNameLiveChat : 'Live support',
+        thumb: '',
+        icon_bot: ''
+    },
+        appCodeHash = window.location.hash.substr(1);
+    if (appCodeHash.length == 32) {
+        objPreDefineLiveChat.appCode = appCodeHash;
+    }
+    let fpt_ai_livechat_script = document.createElement('script');
+    fpt_ai_livechat_script.id = 'fpt_ai_livechat_script';
+    fpt_ai_livechat_script.src = __baseUrl + '/static/fptai-livechat.js';
+    document.body.appendChild(fpt_ai_livechat_script);
+    let fpt_ai_livechat_stylesheet = document.createElement('link');
+    fpt_ai_livechat_stylesheet.id = 'fpt_ai_livechat_script';
+    fpt_ai_livechat_stylesheet.rel = 'stylesheet';
+    fpt_ai_livechat_stylesheet.href = __baseUrl + '/static/fptai-livechat.css';
+    document.body.appendChild(fpt_ai_livechat_stylesheet);
+    fpt_ai_livechat_script.onload = function () {
+        fpt_ai_render_chatbox(objPreDefineLiveChat, __baseUrl, 'livechat.fpt.ai:443').catch(e => {
+            console.log('errrr', e);
+        });
+    }
+        (function () {
+            $('#fpt_ai_livechat_button').click();
+            $('.upload-btn').hidden = true;
+            $('.persistent-menu').hidden = true;
+        })();
+    function injectJS() {
+        let a = document.getElementById('fpt_ai_i_live_chat');
+    }
+</script>
+
+</html>
