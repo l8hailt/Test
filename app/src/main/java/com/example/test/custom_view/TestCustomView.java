@@ -1,4 +1,4 @@
-package com.example.test;
+package com.example.test.custom_view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,7 +10,7 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
-class TestCustomView extends View {
+public class TestCustomView extends View {
 
     private Paint paint;
     private RectF rectF;

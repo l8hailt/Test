@@ -1,19 +1,20 @@
-package com.example.test;
+package com.example.test.reference;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.test.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
-class TestDialog extends Dialog implements TestListener {
+public class TestDialog extends Dialog implements TestListener {
 
     private List<TestModel> data;
     private TestCallback callback;

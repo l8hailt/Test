@@ -1,4 +1,4 @@
-package com.example.test;
+package com.example.test.reference;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
@@ -15,9 +15,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.test.R;
+
 import java.util.List;
 
-class TestAdapter extends RecyclerView.Adapter<TestAdapter.TestHolder> {
+public class TestAdapter extends RecyclerView.Adapter<TestAdapter.TestHolder> {
 
     private List<TestModel> data;
 //    private TestListener listener;

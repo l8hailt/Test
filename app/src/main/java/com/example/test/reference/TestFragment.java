@@ -1,4 +1,4 @@
-package com.example.test;
+package com.example.test.reference;
 
 import android.Manifest;
 import android.app.Activity;
@@ -18,6 +18,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.Fragment;
+
+import com.example.test.R;
 
 public class TestFragment extends Fragment {
 

@@ -1,6 +1,6 @@
-package com.example.test;
+package com.example.test.reference;
 
-class TestModel {
+public class TestModel {
 
     private int testValue;
 

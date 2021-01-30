@@ -1,6 +1,6 @@
-package com.example.test;
+package com.example.test.builder;
 
-class TestBuilder {
+public class TestBuilder {
 
     private String testField1;
     private String testField2;
