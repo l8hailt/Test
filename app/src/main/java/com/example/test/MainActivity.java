@@ -1,27 +1,89 @@
 package com.example.test;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.documentfile.provider.DocumentFile;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.webkit.JavascriptInterface;
+import android.webkit.MimeTypeMap;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
+
+    //    private ConstraintLayout constraintLayout;
+    private ImageView imgTest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TestFragment fragment = TestFragment.getInstance();
+//        constraintLayout = findViewById(R.id.mainLayout);
+        imgTest = findViewById(R.id.imgTest);
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.mainLayout, fragment, "TestFragment")
-                .commitAllowingStateLoss();
+//        ObjectAnimator anim = ObjectAnimator.ofInt(constraintLayout, "backgroundColor", Color.WHITE, Color.RED,
+//            Color.WHITE);
+//        anim.setDuration(1500);
+//        anim.setEvaluator(new ArgbEvaluator());
+//        anim.setRepeatMode(ValueAnimator.REVERSE);
+//        anim.setRepeatCount(ValueAnimator.INFINITE);
+//        anim.setInterpolator(new LinearInterpolator());
+//        anim.start();
+
+//        if (savedInstanceState == null) {
+//            getSupportFragmentManager().beginTransaction()
+//                .setReorderingAllowed(true)
+//                .add(R.id.mainLayout, NewStyleFragment.class, null)
+//                .commit();
+//        }
+
+//        TestFragment fragment = TestFragment.getInstance();
+//
+//        getSupportFragmentManager()
+//                .beginTransaction()
+//                .add(R.id.mainLayout, fragment, "TestFragment")
+//                .commitAllowingStateLoss();
 
 //        WebView webView = new WebView(this);
 //        setContentView(webView);
@@ -41,4 +103,149 @@ public class MainActivity extends AppCompatActivity {
 //    public void action(int number) {
 //        Log.e("TAG", "action: " + number);
 //    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 333) {
+                Log.e("TAG", "onActivityResult: " + data.getData());
+//                String path = getRealPathFromURI(this, data.getData());
+//                Log.e("TAG", "onActivityResult: " + path);
+                Glide.with(this).load(data.getData()).into(imgTest);
+
+//                try {
+//                    String otherPath = ContentUriUtils.INSTANCE.getFilePath(this, data.getData());
+//                    Log.e("TAG", "onActivityResult: " + otherPath);
+//                    uploadImage(otherPath, null);
+//                } catch (URISyntaxException e) {
+//                    e.printStackTrace();
+//                }
+
+                try {
+                    InputStream iStream = getContentResolver().openInputStream(data.getData());
+                    MimeTypeMap mime = MimeTypeMap.getSingleton();
+                    String type = mime.getExtensionFromMimeType(getContentResolver().getType(data.getData()));
+//                    byte[] inputData = getBytes(iStream);
+//                    Log.e("TAG", "onActivityResult: " + inputData.length);
+                    String cacheFilePath = saveFile(iStream, type);
+                    uploadImage(cacheFilePath, null);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (requestCode == 123) {
+                Log.e("TAG", "onActivityResult: " + data.getData());
+
+                try {
+                    InputStream iStream = getContentResolver().openInputStream(data.getData());
+                    MimeTypeMap mime = MimeTypeMap.getSingleton();
+                    String type = mime.getExtensionFromMimeType(getContentResolver().getType(data.getData()));
+//                    byte[] inputData = getBytes(iStream);
+//                    Log.e("TAG", "onActivityResult: " + inputData.length);
+                    String cacheFilePath = saveFile(iStream, type);
+                    uploadImage(cacheFilePath, null);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+//                try {
+//                    String otherPath = ContentUriUtils.INSTANCE.getFilePath(this, data.getData());
+//                    Log.e("TAG", "onActivityResult: " + otherPath);
+//                } catch (URISyntaxException e) {
+//                    e.printStackTrace();
+//                }
+            }
+        }
+    }
+
+    private void uploadImage(String path, byte[] data) {
+        //pass it like this
+
+        File file = new File(path);
+        RequestBody requestFile;
+        if (!path.isEmpty()) {
+            requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        } else {
+            requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), data);
+        }
+
+        // MultipartBody.Part is used to send also the actual file name
+        MultipartBody.Part body =
+            MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+
+        RetroClient.getInstance().uploadImage(body).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.e("TAG", "onResponse: ");
+                if (response.isSuccessful()) {
+                    Log.e("TAG", "onResponse: isSuccessful");
+                    if (response.body() != null) {
+                        Log.e("TAG", "onResponse: " + response.body());
+                        if (file.exists()) {
+                            if (file.delete()) {
+                                Log.e("TAG", "onResponse: OK");
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e("TAG", "onFailure: " + t.getMessage());
+            }
+        });
+    }
+
+    private String saveFile(InputStream is, String extension) throws IOException {
+        byte[] buffer = new byte[is.available()];
+        is.read(buffer);
+
+        File targetFile = new File(getCacheDir(), System.currentTimeMillis() + "." + extension);
+        OutputStream outStream = new FileOutputStream(targetFile);
+        outStream.write(buffer);
+
+        return targetFile.getAbsolutePath();
+    }
+
+    public byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        int bufferSize = 1024;
+        byte[] buffer = new byte[bufferSize];
+
+        int len = 0;
+        while ((len = inputStream.read(buffer)) != -1) {
+            byteBuffer.write(buffer, 0, len);
+        }
+        return byteBuffer.toByteArray();
+    }
+
+    public String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = {MediaStore.Images.Media.DATA};
+            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+    public void pickFile(View view) {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 333);
+    }
+
+    public void pickPDF(View view) {
+        Intent intentPDF = new Intent(Intent.ACTION_GET_CONTENT);
+        intentPDF.setType("application/pdf");
+        intentPDF.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(Intent.createChooser(intentPDF, "Select Picture"), 123);
+    }
 }
