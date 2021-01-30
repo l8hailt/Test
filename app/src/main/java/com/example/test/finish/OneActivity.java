@@ -16,6 +16,8 @@ public class OneActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_one);
+
+        // change code and switch branch
     }
 
     public void startTwoAct(View view) {
