@@ -1,11 +1,20 @@
 package com.example.test;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.exifinterface.media.ExifInterface;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -15,6 +24,8 @@ import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.example.test.upload_file_android_q.ContentUriUtils;
+import com.example.test.upload_file_android_q.FileUtils;
 import com.example.test.upload_file_android_q.RetroClient;
 
 import java.io.ByteArrayOutputStream;
@@ -23,6 +34,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -79,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
 //        webView.loadUrl("file:///android_asset/fpt-ai-livechat.html");
 //        webView.loadUrl("https://livechat.fpt.ai/v35/src/index.html");
 
+
     }
 
 //    @JavascriptInterface
@@ -97,45 +111,59 @@ public class MainActivity extends AppCompatActivity {
 //                Log.e("TAG", "onActivityResult: " + path);
                 Glide.with(this).load(data.getData()).into(imgTest);
 
-//                try {
-//                    String otherPath = ContentUriUtils.INSTANCE.getFilePath(this, data.getData());
-//                    Log.e("TAG", "onActivityResult: " + otherPath);
-//                    uploadImage(otherPath, null);
-//                } catch (URISyntaxException e) {
-//                    e.printStackTrace();
-//                }
-
                 try {
-                    InputStream iStream = getContentResolver().openInputStream(data.getData());
-                    MimeTypeMap mime = MimeTypeMap.getSingleton();
-                    String type = mime.getExtensionFromMimeType(getContentResolver().getType(data.getData()));
-//                    byte[] inputData = getBytes(iStream);
-//                    Log.e("TAG", "onActivityResult: " + inputData.length);
-                    String cacheFilePath = saveFile(iStream, type);
-                    uploadImage(cacheFilePath, null);
+                    ExifInterface exifInterface = new ExifInterface(getContentResolver().openInputStream(data.getData()));
+                    Log.e("TAG", "onActivityResult: " + exifInterface.getDateTime());
+                    Log.e("TAG", "onActivityResult: " + exifInterface.getRotationDegrees());
+                    if (exifInterface.getLatLong() != null) {
+                        double lat = exifInterface.getLatLong()[0];
+                        double lng = exifInterface.getLatLong()[1];
+                        Log.e("TAG", "onActivityResult: " + lat + " | " + lng);
+                        Geocoder geocoder = new Geocoder(this);
+                        List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+                        if (addresses != null && !addresses.isEmpty()) {
+                            Address address = addresses.get(0);
+                            Log.e("TAG", "onActivityResult: " + address.getAddressLine(0));
+                        }
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+                //                    String otherPath = ContentUriUtils.INSTANCE.getFilePath(this, data.getData());
+//                String otherPath = FileUtils.getPath(this, data.getData());
+//                Log.e("TAG", "onActivityResult: otherPath " + otherPath);
+//                uploadImage(otherPath, null);
+
+//                try {
+//                    InputStream iStream = getContentResolver().openInputStream(data.getData());
+//                    MimeTypeMap mime = MimeTypeMap.getSingleton();
+//                    String type = mime.getExtensionFromMimeType(getContentResolver().getType(data.getData()));
+////                    byte[] inputData = getBytes(iStream);
+////                    Log.e("TAG", "onActivityResult: " + inputData.length);
+//                    String cacheFilePath = saveFile(iStream, type);
+//                    uploadImage(cacheFilePath, null);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
             } else if (requestCode == 123) {
                 Log.e("TAG", "onActivityResult: " + data.getData());
 
-                try {
-                    InputStream iStream = getContentResolver().openInputStream(data.getData());
-                    MimeTypeMap mime = MimeTypeMap.getSingleton();
-                    String type = mime.getExtensionFromMimeType(getContentResolver().getType(data.getData()));
-//                    byte[] inputData = getBytes(iStream);
-//                    Log.e("TAG", "onActivityResult: " + inputData.length);
-                    String cacheFilePath = saveFile(iStream, type);
-                    uploadImage(cacheFilePath, null);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 //                try {
-//                    String otherPath = ContentUriUtils.INSTANCE.getFilePath(this, data.getData());
-//                    Log.e("TAG", "onActivityResult: " + otherPath);
-//                } catch (URISyntaxException e) {
+//                    InputStream iStream = getContentResolver().openInputStream(data.getData());
+//                    MimeTypeMap mime = MimeTypeMap.getSingleton();
+//                    String type = mime.getExtensionFromMimeType(getContentResolver().getType(data.getData()));
+////                    byte[] inputData = getBytes(iStream);
+////                    Log.e("TAG", "onActivityResult: " + inputData.length);
+//                    String cacheFilePath = saveFile(iStream, type);
+//                    uploadImage(cacheFilePath, null);
+//                } catch (IOException e) {
 //                    e.printStackTrace();
 //                }
+                //                    String otherPath = ContentUriUtils.INSTANCE.getFilePath(this, data.getData());
+                String otherPath = FileUtils.getPath(this, data.getData());
+                Log.e("TAG", "onActivityResult: otherPath " + otherPath);
+                uploadImage(otherPath, null);
             }
         }
     }
