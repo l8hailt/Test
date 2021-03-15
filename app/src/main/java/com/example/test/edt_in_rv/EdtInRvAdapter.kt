@@ -3,10 +3,13 @@ package com.example.test.edt_in_rv
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.test.R
 
-class EdtInRvAdapter(private val list: List<TypeModel>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class EdtInRvAdapter(
+        private val list: List<TypeModel>
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         const val TYPE_1 = 1
@@ -25,10 +28,10 @@ class EdtInRvAdapter(private val list: List<TypeModel>) : RecyclerView.Adapter<R
                 ItemType1(inflater.inflate(R.layout.item_type_1, parent, false))
             }
             2 -> {
-                ItemType1(inflater.inflate(R.layout.item_type_2, parent, false))
+                ItemType2(inflater.inflate(R.layout.item_type_2, parent, false))
             }
             3 -> {
-                ItemType1(inflater.inflate(R.layout.item_type_3, parent, false))
+                ItemType3(inflater.inflate(R.layout.item_type_3, parent, false))
             }
             else -> {
                 throw IllegalArgumentException("Unknown typed $viewType")
@@ -37,7 +40,9 @@ class EdtInRvAdapter(private val list: List<TypeModel>) : RecyclerView.Adapter<R
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
+        if (holder is ItemType3) {
+            holder.bind()
+        }
     }
 
     override fun getItemCount() = list.size
@@ -51,6 +56,19 @@ class EdtInRvAdapter(private val list: List<TypeModel>) : RecyclerView.Adapter<R
     }
 
     class ItemType3(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        private val recyclerView: RecyclerView = itemView.findViewById(R.id.recyclerView)
+
+        fun bind() {
+            val childList = mutableListOf<String>()
+            for (i in 1..10) {
+                childList.add("$i")
+            }
+            recyclerView.apply {
+                layoutManager = GridLayoutManager(itemView.context, 3, GridLayoutManager.HORIZONTAL, false)
+                adapter = RvInRvHaveEdtAdapter(childList)
+            }
+        }
 
     }
 
