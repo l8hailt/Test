@@ -20,7 +20,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
-            android:text="Sap xep" />
+            android:text="Sap xep theo thu tu" />
 
         <ImageView
             android:id="@+id/img_arrow"
@@ -30,7 +30,7 @@
             android:layout_alignTop="@id/ll_container"
             android:layout_alignBottom="@id/ll_container"
             android:layout_toEndOf="@id/ll_container"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@android:drawable/arrow_down_float" />
 
     </LinearLayout>
 

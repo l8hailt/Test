@@ -2,6 +2,8 @@ package com.example.test.popup;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -18,20 +20,21 @@ public class TooltipDialog extends EasyDialog {
     public TooltipDialog(@NonNull Context context, View attachView, List<TooltipOption> options) {
         super(context);
 
-        int[] screenPosition = new int[2];
-        attachView.getLocationOnScreen(screenPosition);
-
-        screenPosition[0] += attachView.getWidth();
-        screenPosition[1] += attachView.getHeight();
+//        int[] screenPosition = new int[2];
+//        attachView.getLocationOnScreen(screenPosition);
+//
+//        screenPosition[0] += attachView.getWidth();
+//        screenPosition[1] += attachView.getHeight();
 
         this
                 .setLocationByAttachedView(attachView)
                 .setGravity(EasyDialog.GRAVITY_BOTTOM)
                 .setBackgroundColor(Color.WHITE)
                 .setTouchOutsideDismiss(true)
-                .setMatchParent(false);
+                .setMarginLeftAndRight((int) (attachView.getLeft() - convertDpToPixel(22f, context)), 32)
+                .setMatchParent(true);
         this.getTipViewInstance().findViewById(R.id.llContent).setBackgroundResource(0);
-//        this.getTipViewInstance().findViewById(R.id.ivTriangle).setVisibility(View.GONE);
+        this.getTipViewInstance().findViewById(R.id.ivTriangle).setVisibility(View.GONE);
         View dialogLayout = getLayoutSharePopup(context, options);
         this.setLayout(dialogLayout);
     }
@@ -60,4 +63,7 @@ public class TooltipDialog extends EasyDialog {
         return dialogLayout;
     }
 
+    public float convertDpToPixel(float dp, Context context){
+        return dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+    }
 }
