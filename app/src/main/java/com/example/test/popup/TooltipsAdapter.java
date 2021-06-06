@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.test.R;
@@ -19,13 +18,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TooltipAdapter extends RecyclerView.Adapter<TooltipAdapter.TooltipHolder> {
+public class TooltipsAdapter extends RecyclerView.Adapter<TooltipsAdapter.TooltipHolder> {
 
     private Context context;
-    private List<TooltipOption> options;
-    private OnTooltipClick listener;
+    private List<TooltipsOption> options;
+    private OnOptionClick listener;
 
-    public TooltipAdapter(Context context, List<TooltipOption> options, OnTooltipClick listener) {
+    public TooltipsAdapter(Context context, List<TooltipsOption> options, OnOptionClick listener) {
         this.context = context;
         this.options = options;
         this.listener = listener;
@@ -40,7 +39,7 @@ public class TooltipAdapter extends RecyclerView.Adapter<TooltipAdapter.TooltipH
 
     @Override
     public void onBindViewHolder(@NonNull TooltipHolder holder, int position) {
-        TooltipOption option = options.get(position);
+        TooltipsOption option = options.get(position);
         holder.bind(option);
     }
 
@@ -61,15 +60,15 @@ public class TooltipAdapter extends RecyclerView.Adapter<TooltipAdapter.TooltipH
             ButterKnife.bind(this, itemView);
         }
 
-        void bind(TooltipOption tooltipOption) {
+        void bind(TooltipsOption tooltipOption) {
             if (tooltipOption.isChecked()) {
 //                ivCheck.setImageResource(R.drawable.ic_clock_uu_dai);
 //                tvName.setTextColor(ContextCompat.getColor(context, R.color.default_color_app));
-                tvDisplayName.setTextColor(Color.BLACK);
+                tvDisplayName.setTextColor(Color.RED);
             } else {
 //                ivCheck.setImageResource(R.drawable.ic_clock_gray);
 //                tvName.setTextColor(ContextCompat.getColor(context, R.color.color_B5B4B4));
-                tvDisplayName.setTextColor(Color.RED);
+                tvDisplayName.setTextColor(Color.BLACK);
             }
             tvDisplayName.setText(tooltipOption.getDisplayName());
 
@@ -82,7 +81,4 @@ public class TooltipAdapter extends RecyclerView.Adapter<TooltipAdapter.TooltipH
         }
     }
 
-    public interface OnTooltipClick {
-        void onClick(String type);
-    }
 }

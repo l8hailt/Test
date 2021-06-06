@@ -1,16 +1,16 @@
 package com.example.test.popup;
 
-public class TooltipOption {
+public class TooltipsOption {
 
     private String type;
     private String displayName;
     private boolean isChecked;
 
-    public TooltipOption() {
+    public TooltipsOption() {
 
     }
 
-    public TooltipOption(String type, String displayName, boolean isChecked) {
+    public TooltipsOption(String type, String displayName, boolean isChecked) {
         this.type = type;
         this.displayName = displayName;
         this.isChecked = isChecked;
